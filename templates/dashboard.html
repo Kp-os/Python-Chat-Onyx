@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Панель управління - Чат-сервер{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4>Привіт, {{ user.username }}!</h4>
+                <a href="{{ url_for('logout') }}" class="btn btn-outline-danger btn-sm">Вийти</a>
+            </div>
+            <div class="card-body">
+                <h5>Ваші чат-кімнати:</h5>
+                {% if user_rooms %}
+                <div class="list-group mb-3">
+                    {% for room in user_rooms %}
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>{{ room.name }}</strong>
+                            {% if room.owner_id == user.id %}
+                            <span class="badge bg-primary">Власник</span>
+                            {% endif %}
+                        </div>
+                        <a href="{{ url_for('chat_room', room_id=room.id) }}" class="btn btn-primary btn-sm">Увійти</a>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted">У вас поки немає чат-кімнат.</p>
+                {% endif %}
+
+                {% if owned_rooms %}
+                <h6>Коди запрошень для ваших кімнат:</h6>
+                <div class="row">
+                    {% for room in owned_rooms %}
+                    <div class="col-md-6 mb-2">
+                        <div class="card">
+                            <div class="card-body p-2">
+                                <small class="text-muted">{{ room.name }}</small><br>
+                                <code>{{ room.invite_code }}</code>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5>Створити кімнату</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('create_room') }}">
+                    <div class="mb-3">
+                        <label for="room_name" class="form-label">Назва кімнати</label>
+                        <input type="text" class="form-control" id="room_name" name="room_name" required>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">Створити</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h5>Приєднатися до кімнати</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('join_room_route') }}">
+                    <div class="mb-3">
+                        <label for="invite_code" class="form-label">Код запрошення</label>
+                        <input type="text" class="form-control" id="invite_code" name="invite_code" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Приєднатися</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

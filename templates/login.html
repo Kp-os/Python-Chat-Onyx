@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Вхід - Чат-сервер{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header text-center">
+                <h3>Вхід до чату</h3>
+            </div>
+            <div class="card-body">
+                <form id="authForm" method="POST">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Ім'я користувача</label>
+                        <input type="text" class="form-control" id="username" name="username" required>
+                    </div>
+                    <div class="mb-3" id="passwordGroup" style="display: none;">
+                        <label for="password" class="form-label">Пароль</label>
+                        <input type="password" class="form-control" id="password" name="password">
+                    </div>
+                    <div class="d-grid">
+                        <button type="button" class="btn btn-primary" id="checkUser">Перевірити користувача</button>
+                        <button type="submit" class="btn btn-success" id="submitBtn" style="display: none;">Увійти
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('checkUser').addEventListener('click', function () {
+        const username = document.getElementById('username').value;
+        if (!username) {
+            alert('Введіть ім\'я користувача');
+            return;
+        }
+
+        fetch('/check_user', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({username: username})
+        })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('passwordGroup').style.display = 'block';
+                document.getElementById('checkUser').style.display = 'none';
+                document.getElementById('submitBtn').style.display = 'block';
+
+                if (data.exists) {
+                    document.getElementById('authForm').action = '/login';
+                    document.querySelector('label[for="password"]').textContent = 'Пароль';
+                    document.getElementById('submitBtn').textContent = 'Увійти';
+                } else {
+                    document.getElementById('authForm').action = '/register';
+                    document.querySelector('label[for="password"]').textContent = 'Створіть пароль';
+                    document.getElementById('submitBtn').textContent = 'Зареєструватися';
+                }
+                document.getElementById('password').focus();
+            });
+    });
+</script>
+{% endblock %}
