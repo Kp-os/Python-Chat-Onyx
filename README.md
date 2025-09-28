@@ -25,8 +25,8 @@ This project was created during an internship at Onyx Company. It is a simple ch
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/websocket-chat-server.git
-   cd websocket-chat-server
+   https://github.com/Kp-os/Python-Chat-Onyx
+   cd Python-Chat-Onyx
    ```
 
 2. **Create a virtual environment (recommended)**
